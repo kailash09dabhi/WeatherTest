@@ -1,0 +1,18 @@
+android {
+  buildTypes {
+    debug {
+      testCoverageEnabled true
+    }
+  }
+  testOptions {
+    animationsDisabled true
+    unitTests {
+      includeAndroidResources = true
+      all {
+        testLogging {
+          events 'passed', 'skipped', 'failed'
+        }
+      }
+    }
+  }
+}
