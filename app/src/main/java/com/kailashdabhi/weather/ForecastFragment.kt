@@ -45,43 +45,48 @@ class ForecastFragment : Fragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     recyclerView.layoutManager = LinearLayoutManager(context)
-    LocationRepository().getLastLocation(context!!)
-      .doOnSuccess {
-        activity!!.title = it + " Forecast"
-        viewModel.forecast(it)
-      }
-      .doOnError {
-        Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-      }
-      .subscribe(RxUtils.singleObserver())
-    viewModel.forecast().observe(viewLifecycleOwner, Observer {
-      when (it.status) {
+    context?.let {
+      LocationRepository().getLastLocation(it)
+        .doOnSuccess { location ->
+          activity?.title = location + " Forecast"
+          viewModel.forecast(location)
+        }
+        .doOnError {
+          Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+        }
+        .subscribe(RxUtils.singleObserver())
+    }
+    viewModel.forecast().observe(viewLifecycleOwner, Observer { resource ->
+      when (resource.status) {
         SUCCESS -> {
           progress.visibility = View.GONE
           spinner.visibility = View.VISIBLE
-          spinner.adapter = ArrayAdapter<String>(
-            context!!,
-            android.R.layout.simple_spinner_dropdown_item,
-            it.data!!.keys.toList()
-          )
-          spinner.onItemSelectedListener = object : OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
+          context?.let {
+            spinner.adapter = ArrayAdapter<String>(
+              it,
+              android.R.layout.simple_spinner_dropdown_item,
+              resource.data?.keys?.toList() ?: listOf()
+            )
+            spinner.onItemSelectedListener = object : OnItemSelectedListener {
+              override fun onNothingSelected(parent: AdapterView<*>?) {
+              }
 
-            override fun onItemSelected(
-              parent: AdapterView<*>?,
-              view: View?,
-              position: Int,
-              id: Long
-            ) {
-              recyclerView.visibility = View.VISIBLE
-              recyclerView.adapter =
-                WeatherAdapter(it.data[(view as TextView).text]!!)
+              override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+              ) {
+                recyclerView.visibility = View.VISIBLE
+                recyclerView.adapter =
+                  WeatherAdapter(resource.data?.get((view as TextView).text) ?: listOf())
+              }
             }
           }
+
         }
         ERROR -> {
-          Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+          Toast.makeText(context, resource.message, Toast.LENGTH_LONG).show()
         }
         LOADING -> {
           progress.visibility = View.VISIBLE

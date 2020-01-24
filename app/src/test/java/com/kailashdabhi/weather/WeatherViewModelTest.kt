@@ -69,15 +69,15 @@ class WeatherViewModelTest {
   @Before
   fun setUp() {
     ServiceLocator.apiService(Mockito.mock(WeatherService::class.java))
-    Mockito.`when`(ServiceLocator.weatherService()!!.weatherDetailsOf(MUMBAI))
+    Mockito.`when`(ServiceLocator.weatherService()?.weatherDetailsOf(MUMBAI))
       .thenReturn(
         Single.just(MUMBAI_WEATHER)
       )
-    Mockito.`when`(ServiceLocator.weatherService()!!.weatherDetailsOf(BANGALORE))
+    Mockito.`when`(ServiceLocator.weatherService()?.weatherDetailsOf(BANGALORE))
       .thenReturn(
         Single.just(BANGALORE_WEATHER)
       )
-    Mockito.`when`(ServiceLocator.weatherService()!!.weatherDetailsOf(LONDON))
+    Mockito.`when`(ServiceLocator.weatherService()?.weatherDetailsOf(LONDON))
       .thenReturn(
         Single.just(LONDON_WEATHER)
       )
@@ -87,9 +87,9 @@ class WeatherViewModelTest {
   @Test
   fun weather_request_for_3_to_7_cities_should_return_weather_of_given_cities() {
     weatherViewModel.weather("mumbai,london,bangalore")
-    assertTrue(weatherViewModel.weatherList().value!!.data!![0] == MUMBAI_WEATHER)
-    assertTrue(weatherViewModel.weatherList().value!!.data!![1] == LONDON_WEATHER)
-    assertTrue(weatherViewModel.weatherList().value!!.data!![2] == BANGALORE_WEATHER)
+    assertTrue(weatherViewModel.weatherList().value?.data!![0] == MUMBAI_WEATHER)
+    assertTrue(weatherViewModel.weatherList().value?.data!![1] == LONDON_WEATHER)
+    assertTrue(weatherViewModel.weatherList().value?.data!![2] == BANGALORE_WEATHER)
     Mockito.`when`(
       ServiceLocator.weatherService()!!.weatherDetailsOf(
         ArgumentMatchers.anyString(),
@@ -134,10 +134,10 @@ class WeatherViewModelTest {
     //check if we have hashmap of 5 days
     assertEquals(5, weatherViewModel.forecast().value!!.data!!.keys.size)
     //check hash map keys have the proper date value
-    assertEquals(DATE_1, weatherViewModel.forecast().value!!.data!!.keys.toList()[0])
-    assertEquals(DATE_2, weatherViewModel.forecast().value!!.data!!.keys.toList()[1])
-    assertEquals(DATE_3, weatherViewModel.forecast().value!!.data!!.keys.toList()[2])
-    assertEquals(DATE_4, weatherViewModel.forecast().value!!.data!!.keys.toList()[3])
-    assertEquals(DATE_5, weatherViewModel.forecast().value!!.data!!.keys.toList()[4])
+    assertEquals(DATE_1, weatherViewModel.forecast().value?.data!!.keys.toList()[0])
+    assertEquals(DATE_2, weatherViewModel.forecast().value?.data!!.keys.toList()[1])
+    assertEquals(DATE_3, weatherViewModel.forecast().value?.data!!.keys.toList()[2])
+    assertEquals(DATE_4, weatherViewModel.forecast().value?.data!!.keys.toList()[3])
+    assertEquals(DATE_5, weatherViewModel.forecast().value?.data!!.keys.toList()[4])
   }
 }

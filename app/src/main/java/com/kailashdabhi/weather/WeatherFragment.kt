@@ -60,7 +60,7 @@ class WeatherFragment : Fragment() {
           progress.visibility = View.GONE
           recyclerView.visibility = View.VISIBLE
           recyclerView.layoutManager = LinearLayoutManager(context)
-          recyclerView.adapter = WeatherAdapter(it.data!!)
+          recyclerView.adapter = WeatherAdapter(it.data ?: listOf())
         }
         ERROR -> {
           Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
@@ -84,15 +84,17 @@ class WeatherFragment : Fragment() {
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     val id = item.itemId
     if (id == R.id.action_forecast) {
-      if (PermissionChecker.checkSelfPermission(activity!!, permission.ACCESS_COARSE_LOCATION)
-        == PermissionChecker.PERMISSION_DENIED
-      ) {
-        requestPermissions(
-          arrayOf(permission.ACCESS_COARSE_LOCATION),
-          RequestCodes.LOCATION_PERMISSION
-        )
-      } else {
-        navigateToForecast()
+      activity?.let {
+        if (PermissionChecker.checkSelfPermission(it, permission.ACCESS_COARSE_LOCATION)
+          == PermissionChecker.PERMISSION_DENIED
+        ) {
+          requestPermissions(
+            arrayOf(permission.ACCESS_COARSE_LOCATION),
+            RequestCodes.LOCATION_PERMISSION
+          )
+        } else {
+          navigateToForecast()
+        }
       }
     }
     return true
@@ -114,22 +116,24 @@ class WeatherFragment : Fragment() {
         if (grantResults.size == 1 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
           navigateToForecast()
         } else {
-          if (!ActivityCompat.shouldShowRequestPermissionRationale(
-              activity!!,
-              permission.ACCESS_COARSE_LOCATION
-            )
-          ) {
-            Toast.makeText(
-              context,
-              "Open settings and enable location permission",
-              Toast.LENGTH_SHORT
-            ).show()
-          } else {
-            Toast.makeText(
-              activity!!,
-              "Location access required to see forecast for a current location!",
-              Toast.LENGTH_LONG
-            ).show()
+          activity?.let {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                it,
+                permission.ACCESS_COARSE_LOCATION
+              )
+            ) {
+              Toast.makeText(
+                context,
+                "Open settings and enable location permission",
+                Toast.LENGTH_SHORT
+              ).show()
+            } else {
+              Toast.makeText(
+                it,
+                "Location access required to see forecast for a current location!",
+                Toast.LENGTH_LONG
+              ).show()
+            }
           }
         }
       }

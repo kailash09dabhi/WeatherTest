@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">XebiaTest</string>
+    <string name="app_name">WeatherTest</string>
   <string name="weather_hintCityName">Type city names separated by comma</string>
 </resources>

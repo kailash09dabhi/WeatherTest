@@ -37,13 +37,13 @@ class WeatherRepositoryTest {
 
   @Test
   fun weatherOnce_should_fetch_weather_of_supplied_cities_and_return_list_of_city_weather() {
-    `when`(ServiceLocator.weatherService()!!.weatherDetailsOf(MUMBAI)).thenReturn(
+    `when`(ServiceLocator.weatherService()?.weatherDetailsOf(MUMBAI)).thenReturn(
       Single.just(MUMBAI_WEATHER)
     )
-    `when`(ServiceLocator.weatherService()!!.weatherDetailsOf(BANGALORE)).thenReturn(
+    `when`(ServiceLocator.weatherService()?.weatherDetailsOf(BANGALORE)).thenReturn(
       Single.just(BANGALORE_WEATHER)
     )
-    `when`(ServiceLocator.weatherService()!!.weatherDetailsOf(LONDON)).thenReturn(
+    `when`(ServiceLocator.weatherService()?.weatherDetailsOf(LONDON)).thenReturn(
       Single.just(LONDON_WEATHER)
     )
     val test = WeatherRepository.instance.weatherOnce(cityList).test()

@@ -38,7 +38,7 @@ class WeatherAdapter(private val items: List<CityWeatherDetail>) :
       holder.city.text = "City - " + cityWeatherDetail.name
     }
     holder.windSpeed.text = "Wind speed - " + cityWeatherDetail.wind?.speed.toString()
-    holder.description.text = "Description - " + cityWeatherDetail.weather?.get(0)!!.description
+    holder.description.text = "Description - " + cityWeatherDetail.weather?.get(0)?.description
     holder.temperature.text =
       "temp min - " + cityWeatherDetail.main?.tempMin + ", temp max - " + cityWeatherDetail.main?.tempMax
   }

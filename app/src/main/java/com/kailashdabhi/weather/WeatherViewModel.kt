@@ -13,6 +13,7 @@ import com.kailashdabhi.weather.data.model.CityWeatherDetail
  * @date 22, Jan 2020 (16:29)
  */
 class WeatherViewModel : ViewModel() {
+
   private val weatherList = MutableLiveData<Resource<List<CityWeatherDetail>>>()
   private val forecast = MutableLiveData<Resource<Map<String, List<CityWeatherDetail>>>>()
   fun weatherList(): LiveData<Resource<List<CityWeatherDetail>>> {
@@ -27,9 +28,11 @@ class WeatherViewModel : ViewModel() {
     weatherList.postValue(Resource.loading(null))
     val cityList = cities.split(",").map { it.trim() }.toList()
     if (cityList.size in 3..7)
-      WeatherRepository.instance.weatherOnce(cityList)
-        .doOnSuccess {
-          weatherList.postValue(Resource.success(it.toList() as List<CityWeatherDetail>))
+      WeatherRepository.weatherOnce(cityList)
+        .doOnSuccess { array ->
+          var data = array.toList() as List<CityWeatherDetail>
+          data = data.filter { !it.name.isNullOrEmpty() }
+          weatherList.postValue(Resource.success(data))
         }
         .doOnError {
           weatherList.postValue(Resource.error(it.message ?: "", null))
@@ -46,7 +49,7 @@ class WeatherViewModel : ViewModel() {
   }
 
   fun forecast(city: String) {
-    WeatherRepository.instance.forecastOnce(city)
+    WeatherRepository.forecastOnce(city)
       .doOnSubscribe { forecast.postValue(Resource.loading(null)) }
       .doOnSuccess { fc ->
         val distinct: List<String> = fc.list.map { it.dtTxt.split(" ")[0] }.distinct()

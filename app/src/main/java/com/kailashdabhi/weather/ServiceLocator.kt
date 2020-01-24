@@ -8,8 +8,8 @@ import com.mobimove.nursery.api.WeatherService
  * @date 18/02/2019
  */
 object ServiceLocator {
-  private var weatherService: WeatherService? = null
-  fun weatherService(): WeatherService? {
+  private lateinit var weatherService: WeatherService
+  fun weatherService(): WeatherService {
     return weatherService
   }
 
